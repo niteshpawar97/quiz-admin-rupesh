@@ -1,0 +1,67 @@
+const express = require('express');
+
+const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
+
+const dotenv = require('dotenv');
+
+const userRoutes = require('./routes/userRoutes');
+const instituteRoutes = require('./routes/instituteRoutes');
+const roleRoutes = require('./routes/roleRoutes');
+const subjectRoutes = require('./routes/subjectRoutes');
+const standardRoutes = require('./routes/standardRoutes');
+const boardRoutes = require('./routes/boardRoutes');
+const mediumRoutes = require('./routes/mediumRoutes');
+
+const errorMiddleware = require('./middleware/errorMiddleware');
+const logger = require('./utils/logger');
+require('express-async-errors');  // Automatically catches async errors
+
+dotenv.config();
+
+const app = express();
+app.use(express.json());
+
+const swaggerOptions = {
+    definition: {
+        openapi: '3.0.0',
+        info: {
+            title: 'API Documentation',
+            version: '1.0.0',
+            description: 'API for Quiz Admin',
+            contact: {
+                name: 'Rupesh Bhade',
+                email: 'rupeshbhade@gmail.com'
+            },
+            servers: [
+                {
+                    url: 'http://localhost:3000',
+                    description: 'Development server'
+                }
+            ]
+        }
+    },
+    apis: ['./routes/*.js'] // This path tells swagger-jsdoc to scan your route files for API documentation
+};
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+
+// API routes
+app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/institutes', instituteRoutes);
+app.use('/api/v1/roles', roleRoutes);
+app.use('/api/v1/subjects', subjectRoutes);
+app.use('/api/v1/standard', standardRoutes);
+app.use('/api/v1/boards', boardRoutes);
+app.use('/api/v1/medium', mediumRoutes);
+
+// Error handling middleware
+app.use(errorMiddleware);
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+    logger.info(`Server running on port ${PORT}`);
+});
