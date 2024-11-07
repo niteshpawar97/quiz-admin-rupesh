@@ -1,10 +1,11 @@
 const { getAllBoards, getBoardById, createBoard, updateBoard, deleteBoard } = require('../models/boardModel');
 const Joi = require('joi');
 
+// TODO: Boards working Now
 // Input validation schema using Joi
 const roleSchema = Joi.object({
-    name: Joi.string().min(3).required(),
-    email: Joi.string().email().required()
+    code: Joi.string().required(),
+    board_name: Joi.string().required()
 });
 
 // Get all roles

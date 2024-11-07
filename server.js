@@ -1,5 +1,5 @@
 const express = require('express');
-
+const cors = require('cors');
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
@@ -20,6 +20,7 @@ require('express-async-errors');  // Automatically catches async errors
 dotenv.config();
 
 const app = express();
+app.use(cors()); // Enable CORS for all routes
 app.use(express.json());
 
 const swaggerOptions = {
@@ -45,17 +46,17 @@ const swaggerOptions = {
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
-app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+// app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 
 // API routes
-app.use('/api/v1/users', userRoutes);
-app.use('/api/v1/institutes', instituteRoutes);
-app.use('/api/v1/roles', roleRoutes);
-app.use('/api/v1/subjects', subjectRoutes);
-app.use('/api/v1/standard', standardRoutes);
-app.use('/api/v1/boards', boardRoutes);
-app.use('/api/v1/medium', mediumRoutes);
+app.use('/api/v1/users', userRoutes);// TODO: users not working
+app.use('/api/v1/roles', roleRoutes); // TODO: roles not working
+app.use('/api/v1/institutes', instituteRoutes); // TODO: institutes working Now**
+app.use('/api/v1/subjects', subjectRoutes);// TODO: subjects  working Now **
+app.use('/api/v1/standard', standardRoutes);// TODO: standard working Now **
+app.use('/api/v1/boards', boardRoutes);// TODO: boards working Now **
+app.use('/api/v1/medium', mediumRoutes);// TODO: medium not working
 
 // Error handling middleware
 app.use(errorMiddleware);

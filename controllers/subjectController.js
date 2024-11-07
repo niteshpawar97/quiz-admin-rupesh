@@ -1,53 +1,54 @@
-const { getAllSubjects, getSubjectById, createSubject, updateSubject, deleteSubject } = require('../models/roleModel');
+const { getAllSubjects, getSubjectById, createSubject, updateSubject, deleteSubject } = require('../models/subjectModel');
 const Joi = require('joi');
 
 // Input validation schema using Joi
-const roleSchema = Joi.object({
+const subjectSchema = Joi.object({
+    code: Joi.string().required(),
     name: Joi.string().min(3).required(),
-    email: Joi.string().email().required()
+    standard_id: Joi.number().integer().required(),
 });
 
-// Get all roles
+// Get all subjects
 async function getSubjects(req, res, next) {
     try {
-        const roles = await getAllSubjects();
-        res.status(200).json(roles);
+        const subjects = await getAllSubjects();
+        res.status(200).json(subjects);
     } catch (error) {
         next(error);
     }
 }
 
-// Get a single role by ID
+// Get a single subject by ID
 async function getSubject(req, res, next) {
     try {
         const { id } = req.params;
-        const role = await getSubjectById(id);
-        if (!role) {
+        const subject = await getSubjectById(id);
+        if (!subject) {
             return res.status(404).json({ message: 'Subject not found' });
         }
-        res.status(200).json(role);
+        res.status(200).json(subject);
     } catch (error) {
         next(error);
     }
 }
 
-// Create a new role
+// Create a new subject
 async function createNewSubject(req, res, next) {
     try {
-        const { error } = roleSchema.validate(req.body);
+        const { error } = subjectSchema.validate(req.body);
         if (error) return res.status(400).json({ message: error.details[0].message });
 
-        const roleId = await createSubject(req.body);
-        res.status(201).json({ message: 'Subject created', roleId });
+        const subjectId = await createSubject(req.body);
+        res.status(201).json({ message: 'Subject created', subjectId });
     } catch (error) {
         next(error);
     }
 }
 
-// Update an existing role
+// Update an existing subject
 async function updateExistingSubject(req, res, next) {
     try {
-        const { error } = roleSchema.validate(req.body);
+        const { error } = subjectSchema.validate(req.body);
         if (error) return res.status(400).json({ message: error.details[0].message });
 
         const { id } = req.params;
@@ -58,7 +59,7 @@ async function updateExistingSubject(req, res, next) {
     }
 }
 
-// Delete a role
+// Delete a subject
 async function removeSubject(req, res, next) {
     try {
         const { id } = req.params;
