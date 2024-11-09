@@ -10,14 +10,14 @@ async function getBoardById(id) {
     return rows[0];
 }
 
-async function createBoard(role) {
-    const { code, board_name } = role;
+async function createBoard(board) {
+    const { code, board_name } = board;
     const [result] = await db.query('INSERT INTO m_board (code, board_name) VALUES (?, ?)', [code, board_name]);
     return result.insertId;
 }
 
-async function updateBoard(id, role) {
-    const { code, board_name } = role;
+async function updateBoard(id, board) {
+    const { code, board_name } = board;
     await db.query('UPDATE m_board SET code = ?, board_name = ? WHERE tblrefid = ?', [code, board_name, id]);
 }
 

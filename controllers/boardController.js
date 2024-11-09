@@ -1,71 +1,97 @@
 const { getAllBoards, getBoardById, createBoard, updateBoard, deleteBoard } = require('../models/boardModel');
 const Joi = require('joi');
 
-// TODO: Boards working Now
 // Input validation schema using Joi
-const roleSchema = Joi.object({
+const boardSchema = Joi.object({
     code: Joi.string().required(),
     board_name: Joi.string().required()
 });
 
-// Get all roles
+// Get all boards
 async function getBoards(req, res, next) {
+    console.log("Fetching all boards...");
     try {
-        const roles = await getAllBoards();
-        res.status(200).json(roles);
+        const boards = await getAllBoards();
+        console.log("Boards fetched successfully:", boards);
+        res.status(200).json({ error: false, data: boards });
     } catch (error) {
+        console.error("Error fetching boards:", error.message);
+        res.status(500).json({ error: true, message: "Failed to fetch boards" });
         next(error);
     }
 }
 
-// Get a single role by ID
+// Get a single board by ID
 async function getBoard(req, res, next) {
+    const { id } = req.params;
+    console.log(`Fetching board with ID: ${id}`);
     try {
-        const { id } = req.params;
-        const role = await getBoardById(id);
-        if (!role) {
-            return res.status(404).json({ message: 'Board not found' });
+        const board = await getBoardById(id);
+        if (!board) {
+            console.log("Board not found");
+            return res.status(404).json({ error: true, message: 'Board not found' });
         }
-        res.status(200).json(role);
+        console.log("Board fetched successfully:", board);
+        res.status(200).json({ error: false, data: board });
     } catch (error) {
+        console.error(`Error fetching board with ID ${id}:`, error.message);
+        res.status(500).json({ error: true, message: "Failed to fetch board" });
         next(error);
     }
 }
 
-// Create a new role
+// Create a new board
 async function createNewBoard(req, res, next) {
+    console.log("Creating a new board with data:", req.body);
     try {
-        const { error } = roleSchema.validate(req.body);
-        if (error) return res.status(400).json({ message: error.details[0].message });
+        const { error } = boardSchema.validate(req.body);
+        if (error) {
+            console.log("Validation error:", error.details[0].message);
+            return res.status(400).json({ error: true, message: error.details[0].message });
+        }
 
-        const roleId = await createBoard(req.body);
-        res.status(201).json({ message: 'Board created', roleId });
+        const boardId = await createBoard(req.body);
+        console.log("Board created successfully with ID:", boardId);
+        res.status(201).json({ error: false, message: 'Board created', boardId });
     } catch (error) {
+        console.error("Error creating board:", error.message);
+        res.status(500).json({ error: true, message: "Failed to create board" });
         next(error);
     }
 }
 
-// Update an existing role
+// Update an existing board
 async function updateExistingBoard(req, res, next) {
+    const { id } = req.params;
+    console.log(`Updating board with ID: ${id} with data:`, req.body);
     try {
-        const { error } = roleSchema.validate(req.body);
-        if (error) return res.status(400).json({ message: error.details[0].message });
+        const { error } = boardSchema.validate(req.body);
+        if (error) {
+            console.log("Validation error:", error.details[0].message);
+            return res.status(400).json({ error: true, message: error.details[0].message });
+        }
 
-        const { id } = req.params;
         await updateBoard(id, req.body);
-        res.status(200).json({ message: 'Board updated' });
+        console.log(`Board with ID ${id} updated successfully`);
+        res.status(200).json({ error: false, message: 'Board updated' });
     } catch (error) {
+        console.error(`Error updating board with ID ${id}:`, error.message);
+        res.status(500).json({ error: true, message: "Failed to update board" });
         next(error);
     }
 }
 
-// Delete a role
+// Delete a board
 async function removeBoard(req, res, next) {
+    const { id } = req.params;
+    console.log(`Deleting board with ID: ${id}`);
     try {
-        const { id } = req.params;
         await deleteBoard(id);
-        res.status(200).json({ message: 'Board deleted' });
+        console.log(`Board with ID ${id} deleted successfully`);
+        res.status(200).json({ error: false, message: 'Board deleted' });
     } catch (error) {
+        console.error(`Error deleting board with ID ${id}:`, error.message);
+        res.status(500).json({ error: true, message: "Failed to delete board" });
         next(error);
     }
 }
