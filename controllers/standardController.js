@@ -11,8 +11,9 @@ const standardSchema = Joi.object({
 async function getStandards(req, res, next) {
     try {
         const standards = await getAllStandard();
-        res.status(200).json(standards);
+        res.status(200).json({ error: false, data: standards });
     } catch (error) {
+        res.status(500).json({ error: true, message: 'Failed to fetch standards' });
         next(error);
     }
 }
@@ -23,10 +24,11 @@ async function getStandard(req, res, next) {
         const { id } = req.params;
         const standard = await getStandardById(id);
         if (!standard) {
-            return res.status(404).json({ message: 'Standard not found' });
+            return res.status(404).json({ error: true, message: 'Standard not found' });
         }
-        res.status(200).json(standard);
+        res.status(200).json({ error: false, data: standard });
     } catch (error) {
+        res.status(500).json({ error: true, message: 'Failed to fetch standard' });
         next(error);
     }
 }
@@ -35,11 +37,14 @@ async function getStandard(req, res, next) {
 async function createNewStandard(req, res, next) {
     try {
         const { error } = standardSchema.validate(req.body);
-        if (error) return res.status(400).json({ message: error.details[0].message });
+        if (error) {
+            return res.status(400).json({ error: true, message: error.details[0].message });
+        }
 
         const standardId = await createStandard(req.body);
-        res.status(201).json({ message: 'Standard created', standardId });
+        res.status(201).json({ error: false, message: 'Standard created', standardId });
     } catch (error) {
+        res.status(500).json({ error: true, message: 'Failed to create standard' });
         next(error);
     }
 }
@@ -48,12 +53,15 @@ async function createNewStandard(req, res, next) {
 async function updateExistingStandard(req, res, next) {
     try {
         const { error } = standardSchema.validate(req.body);
-        if (error) return res.status(400).json({ message: error.details[0].message });
+        if (error) {
+            return res.status(400).json({ error: true, message: error.details[0].message });
+        }
 
         const { id } = req.params;
         await updateStandard(id, req.body);
-        res.status(200).json({ message: 'Standard updated' });
+        res.status(200).json({ error: false, message: 'Standard updated' });
     } catch (error) {
+        res.status(500).json({ error: true, message: 'Failed to update standard' });
         next(error);
     }
 }
@@ -63,8 +71,9 @@ async function removeStandard(req, res, next) {
     try {
         const { id } = req.params;
         await deleteStandard(id);
-        res.status(200).json({ message: 'Standard deleted' });
+        res.status(200).json({ error: false, message: 'Standard deleted' });
     } catch (error) {
+        res.status(500).json({ error: true, message: 'Failed to delete standard' });
         next(error);
     }
 }

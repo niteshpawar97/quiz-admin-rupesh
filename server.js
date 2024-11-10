@@ -54,9 +54,9 @@ app.use('/api/v1/users', userRoutes);// TODO: users not working
 app.use('/api/v1/roles', roleRoutes); // TODO: roles not working
 app.use('/api/v1/institutes', instituteRoutes); // TODO: institutes working Now**
 app.use('/api/v1/subjects', subjectRoutes);// TODO: subjects  working Now **
-app.use('/api/v1/standard', standardRoutes);// TODO: standard working Now **
+app.use('/api/v1/standards', standardRoutes);// TODO: standard working Now **
 app.use('/api/v1/boards', boardRoutes);// TODO: boards working Now **
-app.use('/api/v1/medium', mediumRoutes);// TODO: medium not working
+app.use('/api/v1/mediums', mediumRoutes);// TODO: medium not working
 
 // Error handling middleware
 app.use(errorMiddleware);
