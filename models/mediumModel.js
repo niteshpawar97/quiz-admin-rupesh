@@ -11,14 +11,14 @@ async function getMediumById(id) {
 }
 
 async function createMedium(medium) {
-    const { code, name } = medium;
-    const [result] = await db.query('INSERT INTO m_medium (code, name) VALUES (?, ?)', [code, name]);
+    const { medium_code, medium_name } = medium;
+    const [result] = await db.query('INSERT INTO m_medium (medium_code, medium_name) VALUES (?, ?)', [medium_code, medium_name]);
     return result.insertId;
 }
 
 async function updateMedium(id, medium) {
-    const { code, name } = medium;
-    await db.query('UPDATE m_medium SET code = ?, name = ? WHERE tblrefid = ?', [code, name, id]);
+    const { medium_code, medium_name } = medium;
+    await db.query('UPDATE m_medium SET medium_code = ?, medium_name = ? WHERE tblrefid = ?', [medium_code, medium_name, id]);
 }
 
 async function deleteMedium(id) {
