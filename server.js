@@ -12,6 +12,7 @@ const subjectRoutes = require('./routes/subjectRoutes');
 const standardRoutes = require('./routes/standardRoutes');
 const boardRoutes = require('./routes/boardRoutes');
 const mediumRoutes = require('./routes/mediumRoutes');
+const questionRoutes = require('./routes/questionRoutes');
 
 const errorMiddleware = require('./middleware/errorMiddleware');
 const logger = require('./utils/logger');
@@ -57,6 +58,7 @@ app.use('/api/v1/subjects', subjectRoutes);// TODO: subjects  working Now **
 app.use('/api/v1/standards', standardRoutes);// TODO: standard working Now **
 app.use('/api/v1/boards', boardRoutes);// TODO: boards working Now **
 app.use('/api/v1/mediums', mediumRoutes);// TODO: medium not working
+app.use('/api/v1/questions', questionRoutes);// TODO: medium not working
 
 // Error handling middleware
 app.use(errorMiddleware);

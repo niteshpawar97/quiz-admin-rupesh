@@ -12,10 +12,13 @@ const questionSchema = Joi.object({
 
 // Get all questions
 async function getQuestions(req, res, next) {
+    console.log("Fetching all questions...");
     try {
         const questions = await getAllQuestions();
+        console.log("Questions fetched successfully:", questions);
         res.status(200).json({ error: false, data: questions });
     } catch (error) {
+        console.error("Error fetching questions:", error.message);
         res.status(500).json({ error: true, message: 'Failed to fetch questions' });
         next(error);
     }
@@ -23,14 +26,18 @@ async function getQuestions(req, res, next) {
 
 // Get a single question by ID
 async function getQuestion(req, res, next) {
+    const { id } = req.params;
+    console.log(`Fetching question with ID: ${id}`);
     try {
-        const { id } = req.params;
         const question = await getQuestionById(id);
         if (!question) {
+            console.warn(`Question with ID ${id} not found`);
             return res.status(404).json({ error: true, message: 'Question not found' });
         }
+        console.log("Question fetched successfully:", question);
         res.status(200).json({ error: false, data: question });
     } catch (error) {
+        console.error("Error fetching question:", error.message);
         res.status(500).json({ error: true, message: 'Failed to fetch question' });
         next(error);
     }
@@ -38,15 +45,19 @@ async function getQuestion(req, res, next) {
 
 // Create a new question
 async function createNewQuestion(req, res, next) {
+    console.log("Creating new question with data:", req.body);
     try {
         const { error } = questionSchema.validate(req.body);
         if (error) {
+            console.warn("Validation error:", error.details[0].message);
             return res.status(400).json({ error: true, message: error.details[0].message });
         }
 
         const questionId = await createQuestion(req.body);
+        console.log("Question created with ID:", questionId);
         res.status(201).json({ error: false, message: 'Question created', questionId });
     } catch (error) {
+        console.error("Error creating question:", error.message);
         res.status(500).json({ error: true, message: 'Failed to create question' });
         next(error);
     }
@@ -54,16 +65,20 @@ async function createNewQuestion(req, res, next) {
 
 // Update an existing question
 async function updateExistingQuestion(req, res, next) {
+    const { id } = req.params;
+    console.log(`Updating question with ID: ${id} with data:`, req.body);
     try {
         const { error } = questionSchema.validate(req.body);
         if (error) {
+            console.warn("Validation error:", error.details[0].message);
             return res.status(400).json({ error: true, message: error.details[0].message });
         }
 
-        const { id } = req.params;
         await updateQuestion(id, req.body);
+        console.log(`Question with ID ${id} updated successfully.`);
         res.status(200).json({ error: false, message: 'Question updated' });
     } catch (error) {
+        console.error("Error updating question:", error.message);
         res.status(500).json({ error: true, message: 'Failed to update question' });
         next(error);
     }
@@ -71,11 +86,14 @@ async function updateExistingQuestion(req, res, next) {
 
 // Delete a question
 async function removeQuestion(req, res, next) {
+    const { id } = req.params;
+    console.log(`Deleting question with ID: ${id}`);
     try {
-        const { id } = req.params;
         await deleteQuestion(id);
+        console.log(`Question with ID ${id} deleted successfully.`);
         res.status(200).json({ error: false, message: 'Question deleted' });
     } catch (error) {
+        console.error("Error deleting question:", error.message);
         res.status(500).json({ error: true, message: 'Failed to delete question' });
         next(error);
     }
