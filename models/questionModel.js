@@ -8,7 +8,7 @@ async function getAllQuestions() {
 
 // Retrieve a question by ID
 async function getQuestionById(id) {
-    const [rows] = await db.query('SELECT * FROM t_questions WHERE id = ?', [id]);
+    const [rows] = await db.query('SELECT * FROM t_questions WHERE tblrefid = ?', [id]);
     return rows[0];
 }
 
@@ -26,7 +26,7 @@ async function createQuestion(question) {
 async function updateQuestion(id, question) {
     const { question_text, subject_id, difficulty_level, marks, type } = question;
     await db.query(
-        'UPDATE t_questions SET question_text = ?, subject_id = ?, difficulty_level = ?, marks = ?, type = ? WHERE id = ?',
+        'UPDATE t_questions SET question_text = ?, subject_id = ?, difficulty_level = ?, marks = ?, type = ? WHERE tblrefid  = ?',
         [question_text, subject_id, difficulty_level, marks, type, id]
     );
 }
